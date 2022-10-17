@@ -8,7 +8,7 @@ Counting/Logging happens in a threaded callback (using RPi.GPIO.add_event_callba
 See README for details.
 """
 
-from adafruit_mpr121 import MPR121
+from adafruit_mpr121 import MPR121, MPR121_Channel
 import RPi.GPIO as GPIO
 import busio, board
 
@@ -62,32 +62,46 @@ class TouchDetector (MPR121):
 
         super().__init__(i2c)
         self.begin(address =I2Caddr)
-        self.set_thresholds (touchThresh, unTouchThresh)
+        
         #touchDetector specific stuff, making data arrays, and installing callback
         # the tuple of pin numbers to monitor, passed in
         self.touchPins = pinTuple
+
+        test_ = MPR121_Channel(self, 13)
+
+        # Set thresholds on pins we are interested in
+        self.set_thresholds (touchThresh, unTouchThresh)
+
+
         # an array of ints to count touches for each pin, for callbackCountMode
         # we make an array for all 12 pins, even though we may not be monitoring all of them
         self.touchCounts = array ('i', [0]*12)
+
         # a dictionary of lists to capture times of each touch on each pin, for callbackTimeMode
         self.touchTimes = {}
         for pin in self.touchPins:
             self.touchTimes.update({pin : []})
+
         # customCallback will contain reference to custom callback function, when installed
         self.customCallback = None
+
         # make global gTouchDetector reference this TouchDetector
         global gTouchDetector
         gTouchDetector = self
+
         # set up IRQ interrupt pin for input with pull-up resistor. Save IRQpin so we can remove event detect when object is deleted
         self.IRQpin = IRQpin
         GPIO.setmode (GPIO.BCM) # GPIO.setmode may already have been called, but call it again anyway
         GPIO.setup(IRQpin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
         # install callback
         GPIO.add_event_detect (self.IRQpin, GPIO.FALLING)
         GPIO.add_event_callback (self.IRQpin, TouchDetector.touchDetectorCallback)
+
         # callback mode, variable that tracks if we are counting touches, logging touch times, or running custom callback
         # callback is always running, even when callbackMode is 0, but we don't always log the touches
         self.callbackMode = 0
+
         # initial state of touches, saved from one callback call to next, used in callback to separate touches from untouches
         self.prevTouches = self.touched()
 
