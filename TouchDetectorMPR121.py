@@ -61,7 +61,6 @@ class TouchDetector (MPR121):
         i2c = busio.I2C(board.SCL, board.SDA)
 
         super().__init__(i2c)
-        self.begin(address =I2Caddr)
         
         #touchDetector specific stuff, making data arrays, and installing callback
         # the tuple of pin numbers to monitor, passed in
