@@ -10,6 +10,7 @@ See README for details.
 
 from adafruit_mpr121 import MPR121
 import RPi.GPIO as GPIO
+import busio, board
 
 from array import array
 from time import time, sleep
@@ -57,7 +58,9 @@ class TouchDetector (MPR121):
         inits the MPR121 superclass, does MPR121 stuff, then does touchDetector stuff
         """
         # MPR121 stuff
-        super().__init__()
+        i2c = busio.I2C(board.SCL, board.SDA)
+
+        super().__init__(i2c)
         self.begin(address =I2Caddr)
         self.set_thresholds (touchThresh, unTouchThresh)
         #touchDetector specific stuff, making data arrays, and installing callback
