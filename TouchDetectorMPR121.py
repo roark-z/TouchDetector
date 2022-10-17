@@ -65,13 +65,13 @@ class TouchDetector (MPR121):
         #touchDetector specific stuff, making data arrays, and installing callback
         # the tuple of pin numbers to monitor, passed in
         self.touchPins = pinTuple
-
-        # Investigate relationship bebtween channels and pins?
-        test_ = MPR121_Channel(self, 17)
-        test_.threshold = 257
+        
+        print(self.touchPins)
 
         # Set thresholds on pins we are interested in
-        self.set_thresholds (touchThresh, unTouchThresh)
+        for pin in self.touchPins:
+            self[pin].threshold = touchThresh
+            self[pin].release_threshold = unTouchThresh
 
 
         # an array of ints to count touches for each pin, for callbackCountMode
