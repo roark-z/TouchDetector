@@ -66,7 +66,9 @@ class TouchDetector (MPR121):
         # the tuple of pin numbers to monitor, passed in
         self.touchPins = pinTuple
 
-        test_ = MPR121_Channel(self, 13)
+        # Investigate relationship bebtween channels and pins?
+        test_ = MPR121_Channel(self, 17)
+        test_.threshold = 257
 
         # Set thresholds on pins we are interested in
         self.set_thresholds (touchThresh, unTouchThresh)
