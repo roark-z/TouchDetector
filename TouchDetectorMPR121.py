@@ -65,8 +65,6 @@ class TouchDetector (MPR121):
         #touchDetector specific stuff, making data arrays, and installing callback
         # the tuple of pin numbers to monitor, passed in
         self.touchPins = pinTuple
-        
-        print(self.touchPins)
 
         # Set thresholds on pins we are interested in
         for pin in self.touchPins:
